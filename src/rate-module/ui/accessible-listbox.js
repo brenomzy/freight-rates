@@ -31,6 +31,7 @@ export function createAccessibleListbox({
   idPrefix,
   onSelect,
   openOnSpace = false,
+  resetInputScrollOnSelect = false,
   footer = null,
   status = null,
 }) {
@@ -73,9 +74,10 @@ export function createAccessibleListbox({
     optionElements[activeIndex].scrollIntoView?.({ block: 'nearest' });
   }
 
-  function open() {
+  function open(animate = false) {
     if (!items.length && (!status || status.hidden)) return;
 
+    if (animate && !isOpen) list.classList.add('is-pointer-opening');
     isOpen = true;
     list.hidden = false;
     list.classList.add('show');
@@ -87,6 +89,7 @@ export function createAccessibleListbox({
     activeIndex = -1;
     list.hidden = true;
     list.classList.remove('show');
+    list.classList.remove('is-pointer-opening');
     input.setAttribute('aria-expanded', 'false');
     input.removeAttribute('aria-activedescendant');
     optionElements.forEach((option) => option.classList.remove('is-active'));
@@ -99,6 +102,14 @@ export function createAccessibleListbox({
 
     onSelect(item);
     close();
+    resetInputScroll();
+  }
+
+  function resetInputScroll() {
+    if (!resetInputScrollOnSelect) return;
+
+    input.setSelectionRange?.(0, 0);
+    input.scrollLeft = 0;
   }
 
   function setOptions(nextItems) {
@@ -127,7 +138,7 @@ export function createAccessibleListbox({
   }
 
   function handleInputClick() {
-    open();
+    open(true);
   }
 
   function handleInputKeydown(event) {
@@ -187,6 +198,7 @@ export function createAccessibleListbox({
 
     select(optionElements.indexOf(option));
     input.focus();
+    resetInputScroll();
   }
 
   function handleListPointerMove(event) {
@@ -197,6 +209,10 @@ export function createAccessibleListbox({
     setActiveIndex(optionElements.indexOf(option));
   }
 
+  function handleListAnimationEnd() {
+    list.classList.remove('is-pointer-opening');
+  }
+
   function handleOutsideInteraction(event) {
     if (!field?.contains(event.target)) close();
   }
@@ -205,6 +221,7 @@ export function createAccessibleListbox({
   input.addEventListener('keydown', handleInputKeydown);
   list.addEventListener('click', handleListClick);
   list.addEventListener('pointermove', handleListPointerMove);
+  list.addEventListener('animationend', handleListAnimationEnd);
   document.addEventListener('pointerdown', handleOutsideInteraction);
   document.addEventListener('focusin', handleOutsideInteraction);
 
@@ -219,6 +236,7 @@ export function createAccessibleListbox({
       input.removeEventListener('keydown', handleInputKeydown);
       list.removeEventListener('click', handleListClick);
       list.removeEventListener('pointermove', handleListPointerMove);
+      list.removeEventListener('animationend', handleListAnimationEnd);
       document.removeEventListener('pointerdown', handleOutsideInteraction);
       document.removeEventListener('focusin', handleOutsideInteraction);
     },

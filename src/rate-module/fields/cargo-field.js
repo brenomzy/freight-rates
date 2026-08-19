@@ -23,6 +23,7 @@ export function createCargoField(field, store, moduleId) {
     optionTemplate,
     idPrefix: `rate-module-${moduleId}-cargo`,
     openOnSpace: true,
+    resetInputScrollOnSelect: true,
     onSelect(option) {
       store.patchState({ cargo: option });
     },

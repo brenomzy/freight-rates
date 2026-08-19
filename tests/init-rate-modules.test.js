@@ -105,6 +105,7 @@ describe('rate module initialization', () => {
 
     expect(cargoInputs[0].getAttribute('aria-expanded')).toBe('true');
     expect(cargoLists[0].hidden).toBe(false);
+    expect(cargoLists[0].classList.contains('is-pointer-opening')).toBe(true);
 
     cargoLists[0].querySelectorAll('[role="option"]')[2].click();
 
@@ -115,6 +116,8 @@ describe('rate module initialization', () => {
     expect(cargoInputs[0].value).toBe("40' high cube container");
     expect(cargoInputs[1].value).toBe("40' high cube container");
     expect(cargoInputs[0].getAttribute('aria-expanded')).toBe('false');
+    expect(cargoInputs[0].selectionStart).toBe(0);
+    expect(cargoInputs[0].scrollLeft).toBe(0);
 
     initialization.destroy();
   });
@@ -125,10 +128,14 @@ describe('rate module initialization', () => {
 
     const initialization = initRateModules(scope);
     const cargoInputs = scope.querySelectorAll('[data-rate-input="cargo"]');
+    const cargoLists = scope.querySelectorAll('[data-rate-list="cargo"]');
     const airInputs = scope.querySelectorAll('input[name="cargo_option_air"]');
     const seaInputs = scope.querySelectorAll('input[name="cargo_option_sea"]');
 
     cargoInputs[1].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
+
+    expect(cargoLists[1].classList.contains('is-pointer-opening')).toBe(false);
+
     cargoInputs[1].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
     cargoInputs[1].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter' }));
 
@@ -157,6 +164,7 @@ describe('rate module initialization', () => {
 
   it('keeps the ready date read-only and synchronizes the display value', () => {
     const scope = document.createElement('main');
+    const initialBackdropCount = document.querySelectorAll('[data-rate-calendar-backdrop]').length;
     scope.innerHTML = `${getModuleMarkup()}${getModuleMarkup()}`;
 
     const initialization = initRateModules(scope);
@@ -164,6 +172,9 @@ describe('rate module initialization', () => {
 
     expect(dateInputs[0].readOnly).toBe(true);
     expect(dateInputs[0].getAttribute('aria-haspopup')).toBe('dialog');
+    expect(document.querySelectorAll('[data-rate-calendar-backdrop]')).toHaveLength(
+      initialBackdropCount + 2
+    );
 
     initialization.store.patchState({ readyDate: '2026-11-15' });
 
@@ -171,6 +182,10 @@ describe('rate module initialization', () => {
     expect(dateInputs[1].value).toBe('15-11-2026');
 
     initialization.destroy();
+
+    expect(document.querySelectorAll('[data-rate-calendar-backdrop]')).toHaveLength(
+      initialBackdropCount
+    );
   });
 
   it('shows validation errors, clears corrected fields, and builds the redirect', () => {
