@@ -144,14 +144,7 @@ This script handles staging vs production and cache busting automatically.
 
   window.loadResource = function (file, type) {
     const params = new URLSearchParams(location.search);
-    const useLocal = (params.get('staging') || localStorage.getItem('staging')) === 'true';
-
-    // Store and sync staging preference
-    localStorage.setItem('staging', useLocal ? 'true' : 'false');
-    if (useLocal && !params.has('staging')) {
-      params.set('staging', 'true');
-      history.replaceState({}, '', `${location.pathname}?${params}`);
-    }
+    const useLocal = params.get('staging') === 'true';
 
     // Determine base URL
     const isStaging = location.hostname.includes('webflow.io');
@@ -217,11 +210,13 @@ After adding the loader script, add this code to load your JavaScript or CSS fil
 - URL: `https://yoursite.com?staging=true`
 - Loads from: `http://localhost:3000`
 - Requires `pnpm dev` running on your computer
+- Only remains active while `staging=true` is present in the current URL
 
 **Staging mode (Webflow preview):**
 
 - URL: `https://yourproject.webflow.io`
 - Loads from: Staging CDN (after deployment setup)
+- Does not retain local mode in browser storage
 
 **Production mode (live site):**
 

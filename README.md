@@ -40,7 +40,7 @@ Start the development server:
 pnpm dev
 ```
 
-The development bundle is served from `http://localhost:3000/index.js`. Open the [Webflow staging site in local mode](https://digital-sparks-freight-rates.webflow.io/?staging=true) to load it during development.
+The development bundle is served from `http://localhost:3000/index.js`. Open the [Webflow staging site in local mode](https://digital-sparks-freight-rates.webflow.io/?staging=true) to load it during development. Local mode is active only while `staging=true` is present in the URL. Remove the parameter to load the published staging bundle from the CDN.
 
 The Google Maps browser key is supplied at runtime by `window.FREIGHT_RATES_CONFIG` in the Webflow page head. It is not stored in this repository or the generated bundle. See [the Webflow DOM contract](docs/webflow-dom-contract.md#runtime-configuration) for the required snippet.
 
