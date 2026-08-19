@@ -8,6 +8,8 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
       },
     },
   },

@@ -31,11 +31,11 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./bin/build.js",
     "build": "cross-env NODE_ENV=production node ./bin/build.js",
-    "lint": "eslint ./src ./tests ./vitest.config.js && prettier --check ./src ./tests ./vitest.config.js",
-    "lint:fix": "eslint ./src ./tests ./vitest.config.js --fix",
+    "lint": "eslint ./src ./tests ./eslint.config.js ./vitest.config.js && prettier --check ./src ./tests ./eslint.config.js ./vitest.config.js",
+    "lint:fix": "eslint ./src ./tests ./eslint.config.js ./vitest.config.js --fix",
     "check": "tsc --noEmit",
     "test": "vitest run",
-    "format": "prettier --write ./src ./tests ./vitest.config.js",
+    "format": "prettier --write ./src ./tests ./eslint.config.js ./vitest.config.js",
     "release": "changeset publish",
     "update": "pnpm update -i -L -r"
   },
