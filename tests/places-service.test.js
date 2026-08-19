@@ -30,6 +30,22 @@ const rotterdamAddress = createSuggestion({
   types: ['street_address'],
 });
 
+const maringaWithAccent = createSuggestion({
+  mainText: 'Maringá',
+  placeId: 'maringa-accent-id',
+  secondaryText: 'Brazil',
+  text: 'Maringá, Brazil',
+  types: ['locality', 'political'],
+});
+
+const maringaWithoutAccent = createSuggestion({
+  mainText: 'Maringa',
+  placeId: 'maringa-plain-id',
+  secondaryText: 'Brazil',
+  text: 'Maringa, Brazil',
+  types: ['locality', 'political'],
+});
+
 describe('Places service', () => {
   it('normalizes city and address predictions and removes duplicate city labels', () => {
     expect(normalizePlaceSuggestions([rotterdam, rotterdamAddress])).toEqual([
@@ -37,6 +53,16 @@ describe('Places service', () => {
         label: 'Rotterdam, Netherlands',
         placeId: 'rotterdam-id',
         value: 'rotterdam-id',
+      },
+    ]);
+  });
+
+  it('removes duplicate city labels that differ only by accents', () => {
+    expect(normalizePlaceSuggestions([maringaWithAccent, maringaWithoutAccent])).toEqual([
+      {
+        label: 'Maringá, Brazil',
+        placeId: 'maringa-accent-id',
+        value: 'maringa-accent-id',
       },
     ]);
   });

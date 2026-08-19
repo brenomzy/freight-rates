@@ -26,6 +26,13 @@ function getLastItem(items) {
   return items[items.length - 1];
 }
 
+function getPlaceDedupeKey(label) {
+  return label
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('en');
+}
+
 export function normalizePlaceSuggestion(suggestion) {
   const prediction = suggestion?.placePrediction;
 
@@ -55,7 +62,7 @@ export function normalizePlaceSuggestions(suggestions) {
 
   for (const suggestion of suggestions) {
     const place = normalizePlaceSuggestion(suggestion);
-    const normalizedLabel = place?.label.toLocaleLowerCase('en');
+    const normalizedLabel = place ? getPlaceDedupeKey(place.label) : '';
 
     if (!place || seenLabels.has(normalizedLabel)) continue;
 

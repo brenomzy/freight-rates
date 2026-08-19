@@ -139,7 +139,16 @@ export function createFormController(elements, store, moduleId, navigate = navig
 
       if (!errors.cargo) fieldErrors.cargo.clear();
       if (!errors.readyDate) fieldErrors.readyDate.clear();
-      if (!errors.transport) fieldErrors.transport.clear();
+
+      if (
+        errors.transport &&
+        previousState.transportModes.length > 0 &&
+        state.transportModes.length === 0
+      ) {
+        fieldErrors.transport.show();
+      } else if (!errors.transport) {
+        fieldErrors.transport.clear();
+      }
 
       previousState = state;
     },

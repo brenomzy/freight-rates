@@ -35,6 +35,8 @@ describe('mobile calendar modal', () => {
       calendarId: 'ready-date-calendar',
     });
 
+    expect(modal.prepareOpen()).toBe(true);
+    expect(calendarContainer.classList.contains('is-rate-modal')).toBe(true);
     expect(modal.open({ animate: false })).toBe(true);
     expect(calendarContainer.classList.contains('is-rate-modal-open')).toBe(true);
     expect(calendarContainer.getAttribute('aria-modal')).toBe('true');

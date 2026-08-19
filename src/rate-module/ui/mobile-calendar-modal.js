@@ -32,6 +32,17 @@ export function createMobileCalendarModal({ calendar, input, calendarId }) {
   let isOpen = false;
   let animateNextClose = true;
 
+  function prepareOpen() {
+    if (!mobileCalendar.matches) return false;
+
+    window.clearTimeout(closeTimer);
+    container.classList.remove('is-rate-modal-closing');
+    container.classList.add('is-rate-modal');
+    container.getBoundingClientRect();
+
+    return true;
+  }
+
   function finishClose() {
     container.classList.remove('is-rate-modal', 'is-rate-modal-open', 'is-rate-modal-closing');
     container.removeAttribute('aria-modal');
@@ -62,13 +73,10 @@ export function createMobileCalendarModal({ calendar, input, calendarId }) {
   }
 
   function open({ animate = true } = {}) {
-    if (!mobileCalendar.matches) return false;
+    if (!prepareOpen()) return false;
 
     isOpen = true;
     animateNextClose = animate;
-    window.clearTimeout(closeTimer);
-    container.classList.remove('is-rate-modal-closing');
-    container.classList.add('is-rate-modal');
     container.setAttribute('aria-modal', 'true');
     document.body.classList.add('rate-calendar-modal-open');
     backdrop.hidden = false;
@@ -145,6 +153,7 @@ export function createMobileCalendarModal({ calendar, input, calendarId }) {
   return {
     close,
     open,
+    prepareOpen,
     destroy() {
       window.clearTimeout(openTimer);
       window.clearTimeout(closeTimer);

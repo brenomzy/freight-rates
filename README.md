@@ -16,9 +16,11 @@ The implementation is also expected to support duplicated calculator modules, ke
 
 ## Status
 
-Work in progress.
+Complete and prepared for the `v1.0.0` release.
 
 Staging: [digital-sparks-freight-rates.webflow.io](https://digital-sparks-freight-rates.webflow.io/)
+
+QA checklist: [Google Sheets](https://docs.google.com/spreadsheets/d/1eZZ4VVhBVuLS1bbHtM7finlJDgHMwZmX58NIGL8Fxpg/edit)
 
 ## Requirements
 
@@ -58,11 +60,14 @@ pnpm build
 ## Project structure
 
 ```text
-src/       JavaScript source files
+src/       JavaScript source files and component controllers
 dist/      Release bundle loaded by Webflow
 bin/       Starter build and development scripts
-tests/     Automated tests
+tests/     Automated unit and DOM tests
+docs/      Webflow integration contract
 ```
+
+The page coordinator creates one store and one controller for each rate module root. Every controller subscribes to the same store, which keeps duplicated modules synchronized while all DOM queries remain scoped to their own component. The selectors and required Webflow hooks are documented in [docs/webflow-dom-contract.md](docs/webflow-dom-contract.md).
 
 ## Starter documentation
 
@@ -72,4 +77,4 @@ This repository was created from the official [Digital Sparks developer starter]
 - [Build configuration](SETUP.md)
 - [Deployment options](DEPLOYMENT.md)
 
-Project-specific architecture, testing, maintenance, and deployment details will be added as the implementation progresses.
+The project-specific Webflow contract and runtime configuration are documented in [docs/webflow-dom-contract.md](docs/webflow-dom-contract.md). The automated suite and shared QA checklist cover the functional requirements, accessibility checks, responsive behavior, and known environment limitations.

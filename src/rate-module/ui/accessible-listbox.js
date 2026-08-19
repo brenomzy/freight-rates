@@ -32,6 +32,7 @@ export function createAccessibleListbox({
   onSelect,
   openOnSpace = false,
   resetInputScrollOnSelect = false,
+  toggleOnClick = false,
   footer = null,
   status = null,
 }) {
@@ -81,6 +82,7 @@ export function createAccessibleListbox({
     isOpen = true;
     list.hidden = false;
     list.classList.add('show');
+    field?.classList.add('is-rate-list-open');
     input.setAttribute('aria-expanded', 'true');
   }
 
@@ -90,6 +92,7 @@ export function createAccessibleListbox({
     list.hidden = true;
     list.classList.remove('show');
     list.classList.remove('is-pointer-opening');
+    field?.classList.remove('is-rate-list-open');
     input.setAttribute('aria-expanded', 'false');
     input.removeAttribute('aria-activedescendant');
     optionElements.forEach((option) => option.classList.remove('is-active'));
@@ -138,7 +141,11 @@ export function createAccessibleListbox({
   }
 
   function handleInputClick() {
-    open(true);
+    if (toggleOnClick && isOpen) {
+      close();
+    } else {
+      open(true);
+    }
   }
 
   function handleInputKeydown(event) {
@@ -232,6 +239,7 @@ export function createAccessibleListbox({
     setSelectedValue,
     setStatus,
     destroy() {
+      close();
       input.removeEventListener('click', handleInputClick);
       input.removeEventListener('keydown', handleInputKeydown);
       list.removeEventListener('click', handleListClick);

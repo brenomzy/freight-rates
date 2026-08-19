@@ -106,6 +106,16 @@ describe('rate module initialization', () => {
     expect(cargoInputs[0].getAttribute('aria-expanded')).toBe('true');
     expect(cargoLists[0].hidden).toBe(false);
     expect(cargoLists[0].classList.contains('is-pointer-opening')).toBe(true);
+    expect(cargoInputs[0].closest('.cargo_field').classList.contains('is-rate-list-open')).toBe(
+      true
+    );
+
+    cargoInputs[0].click();
+
+    expect(cargoInputs[0].getAttribute('aria-expanded')).toBe('false');
+    expect(cargoLists[0].hidden).toBe(true);
+
+    cargoInputs[0].click();
 
     cargoLists[0].querySelectorAll('[role="option"]')[2].click();
 
@@ -116,6 +126,9 @@ describe('rate module initialization', () => {
     expect(cargoInputs[0].value).toBe("40' high cube container");
     expect(cargoInputs[1].value).toBe("40' high cube container");
     expect(cargoInputs[0].getAttribute('aria-expanded')).toBe('false');
+    expect(cargoInputs[0].closest('.cargo_field').classList.contains('is-rate-list-open')).toBe(
+      false
+    );
     expect(cargoInputs[0].selectionStart).toBe(0);
     expect(cargoInputs[0].scrollLeft).toBe(0);
 
@@ -232,6 +245,9 @@ describe('rate module initialization', () => {
       readyDate: '2099-11-15',
       transportModes: [],
     });
+
+    expect(scope.querySelector('[data-rate-error="transport"]').hidden).toBe(false);
+    expect(seaInput.getAttribute('aria-invalid')).toBe('true');
 
     submit.click();
 

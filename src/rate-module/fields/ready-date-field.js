@@ -61,6 +61,7 @@ export function createReadyDateField(field, store, moduleId) {
 
   function handleInputClick() {
     animateNextOpen = true;
+    mobileModal.prepareOpen();
     calendar.open();
   }
 
@@ -68,6 +69,7 @@ export function createReadyDateField(field, store, moduleId) {
     if (['Enter', ' ', 'ArrowDown'].includes(event.key) && !calendar.isOpen) {
       event.preventDefault();
       animateNextOpen = false;
+      mobileModal.prepareOpen();
       calendar.open();
     }
   }
