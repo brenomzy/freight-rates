@@ -13,7 +13,14 @@ export function initRateModules(scope = document) {
   const controllers = getRateModuleRoots(scope).map((root) =>
     createRateModuleController(root, store)
   );
-  const initialization = { controllers, store };
+  const initialization = {
+    controllers,
+    store,
+    destroy() {
+      controllers.forEach((controller) => controller.destroy());
+      initializations.delete(scope);
+    },
+  };
 
   initializations.set(scope, initialization);
 

@@ -1,6 +1,9 @@
+import { createCargoField } from './fields/cargo-field.js';
+import { createTransportControls } from './fields/transport-controls.js';
 import { getRateModuleElements } from './selectors.js';
 
 const controllers = new WeakMap();
+let moduleCount = 0;
 
 export function createRateModuleController(root, store) {
   const existingController = controllers.get(root);
@@ -8,11 +11,14 @@ export function createRateModuleController(root, store) {
   if (existingController) return existingController;
 
   const elements = getRateModuleElements(root);
+  moduleCount += 1;
+  const moduleId = moduleCount;
+  const cargoField = createCargoField(elements.fields.cargo, store, moduleId);
+  const transportControls = createTransportControls(elements.transport, store);
 
   function render(state) {
-    elements.transport.sea.checked = state.transportModes.includes('sea');
-    elements.transport.air.checked = state.transportModes.includes('air');
-    elements.transport.rail.checked = state.transportModes.includes('rail');
+    cargoField.render(state.cargo);
+    transportControls.render(state.transportModes);
   }
 
   const unsubscribe = store.subscribe(render);
@@ -21,6 +27,8 @@ export function createRateModuleController(root, store) {
   const controller = {
     elements,
     destroy() {
+      cargoField.destroy();
+      transportControls.destroy();
       unsubscribe();
       controllers.delete(root);
     },
