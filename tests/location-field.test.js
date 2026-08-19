@@ -153,4 +153,72 @@ describe('location field', () => {
 
     controller.destroy();
   });
+
+  it('keeps an accessible loading state while suggestions are pending', async () => {
+    vi.useFakeTimers();
+
+    const store = createRateModuleStore();
+    const field = createField();
+    let resolveSuggestions;
+    const placesService = {
+      createSessionToken: vi.fn().mockResolvedValue({ id: 'session' }),
+      getSuggestions: vi.fn(
+        () =>
+          new Promise((resolve) => {
+            resolveSuggestions = resolve;
+          })
+      ),
+    };
+    const controller = createLocationField('origin', field, store, placesService, 'one');
+
+    field.input.value = 'Rotterdam';
+    field.input.dispatchEvent(new window.Event('input'));
+    await vi.advanceTimersByTimeAsync(300);
+
+    expect(field.input.getAttribute('aria-busy')).toBe('true');
+    expect(field.list.hidden).toBe(false);
+    expect(field.list.querySelector('[role="status"]').textContent).toBe('Searching locations…');
+
+    resolveSuggestions([]);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(field.input.hasAttribute('aria-busy')).toBe(false);
+    expect(field.list.querySelector('[role="status"]').textContent).toBe(
+      'No matching cities found.'
+    );
+
+    controller.destroy();
+  });
+
+  it('shows a temporary error state when location suggestions fail', async () => {
+    vi.useFakeTimers();
+
+    const store = createRateModuleStore();
+    const field = createField();
+    const requestError = new Error('Places request failed');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const placesService = {
+      createSessionToken: vi.fn().mockResolvedValue({ id: 'session' }),
+      getSuggestions: vi.fn().mockRejectedValue(requestError),
+    };
+    const controller = createLocationField('origin', field, store, placesService, 'one');
+
+    field.input.value = 'Rotterdam';
+    field.input.dispatchEvent(new window.Event('input'));
+    await vi.advanceTimersByTimeAsync(300);
+
+    expect(field.list.hidden).toBe(false);
+    expect(field.list.querySelector('[role="status"]').textContent).toBe(
+      'Location suggestions are temporarily unavailable.'
+    );
+    expect(field.input.hasAttribute('aria-busy')).toBe(false);
+    expect(consoleError).toHaveBeenCalledWith(
+      '[rate-module] origin suggestions are unavailable.',
+      requestError
+    );
+
+    consoleError.mockRestore();
+    controller.destroy();
+  });
 });

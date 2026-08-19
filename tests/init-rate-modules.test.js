@@ -182,7 +182,9 @@ describe('rate module initialization', () => {
     const initialization = initRateModules(scope, { navigate });
     const submit = scope.querySelector('[data-rate-submit]');
     const originInput = scope.querySelector('[data-rate-input="origin"]');
+    const seaInput = scope.querySelector('[data-rate-mode="sea"]');
     const originFocus = vi.spyOn(originInput, 'focus');
+    const seaFocus = vi.spyOn(seaInput, 'focus');
 
     submit.click();
 
@@ -213,8 +215,16 @@ describe('rate module initialization', () => {
       },
       cargo: { label: "40' high cube container", value: 'HC_40' },
       readyDate: '2099-11-15',
-      transportModes: ['sea', 'air'],
+      transportModes: [],
     });
+
+    submit.click();
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(scope.querySelector('[data-rate-error="transport"]').hidden).toBe(false);
+    expect(seaFocus).toHaveBeenCalledOnce();
+
+    initialization.store.patchState({ transportModes: ['sea', 'air'] });
 
     expect(scope.querySelectorAll('[data-rate-error]:not([hidden])')).toHaveLength(0);
 
