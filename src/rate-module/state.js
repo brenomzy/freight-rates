@@ -2,6 +2,7 @@ export const TRANSPORT_MODES = Object.freeze(['sea', 'air', 'rail']);
 
 export function createEmptyLocation() {
   return {
+    inputValue: '',
     label: '',
     placeId: '',
   };

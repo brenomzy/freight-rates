@@ -1,17 +1,19 @@
+import { createPlacesService } from '../services/places-service.js';
 import { createRateModuleController } from './rate-module-controller.js';
 import { getRateModuleRoots } from './selectors.js';
 import { createRateModuleStore } from './store.js';
 
 const initializations = new WeakMap();
 
-export function initRateModules(scope = document) {
+export function initRateModules(scope = document, options = {}) {
   const existingInitialization = initializations.get(scope);
 
   if (existingInitialization) return existingInitialization;
 
   const store = createRateModuleStore();
+  const placesService = options.placesService ?? createPlacesService();
   const controllers = getRateModuleRoots(scope).map((root) =>
-    createRateModuleController(root, store)
+    createRateModuleController(root, store, placesService)
   );
   const initialization = {
     controllers,

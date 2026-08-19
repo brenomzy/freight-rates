@@ -31,6 +31,7 @@ export function createAccessibleListbox({
   idPrefix,
   onSelect,
   openOnSpace = false,
+  footer = null,
 }) {
   const listboxId = `${idPrefix}-listbox`;
   const field = input.closest('.cargo_field') ?? list.parentElement;
@@ -93,7 +94,7 @@ export function createAccessibleListbox({
     optionElements = items.map((item, index) =>
       createOptionElement(optionTemplate, item, index, listboxId)
     );
-    list.replaceChildren(...optionElements);
+    list.replaceChildren(...optionElements, ...(items.length && footer ? [footer] : []));
     activeIndex = -1;
 
     if (!items.length) close();
