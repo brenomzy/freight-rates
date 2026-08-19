@@ -49,6 +49,7 @@ Run these commands before committing a change:
 ```bash
 pnpm lint
 pnpm check
+pnpm test
 pnpm build
 ```
 
@@ -58,6 +59,7 @@ pnpm build
 src/       JavaScript source files
 dist/      Release bundle loaded by Webflow
 bin/       Starter build and development scripts
+tests/     Automated tests
 ```
 
 ## Starter documentation
