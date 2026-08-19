@@ -18,10 +18,12 @@ The implementation is also expected to support duplicated calculator modules, ke
 
 Work in progress.
 
+Staging: [digital-sparks-freight-rates.webflow.io](https://digital-sparks-freight-rates.webflow.io/)
+
 ## Requirements
 
-- Node.js 18 or newer
-- pnpm 10 or newer
+- Node.js 20 or newer
+- pnpm 10.26 or newer
 - Access to the related Webflow project
 
 ## Local development
@@ -38,7 +40,7 @@ Start the development server:
 pnpm dev
 ```
 
-The development bundle is served from `http://localhost:3000/index.js` and can be loaded by the Webflow staging site during development.
+The development bundle is served from `http://localhost:3000/index.js`. Open the [Webflow staging site in local mode](https://digital-sparks-freight-rates.webflow.io/?staging=true) to load it during development.
 
 ## Quality checks
 
@@ -54,7 +56,7 @@ pnpm build
 
 ```text
 src/       JavaScript source files
-dist/      Production bundle loaded by Webflow
+dist/      Release bundle loaded by Webflow
 bin/       Starter build and development scripts
 ```
 

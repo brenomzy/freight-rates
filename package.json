@@ -1,24 +1,30 @@
 {
-  "name": "@digital-sparks/developer-starter",
-  "version": "0.0.0",
-  "description": "Developer starter template for Digital Sparks projects.",
-  "homepage": "https://github.com/digital-sparks/developer-starter#readme",
+  "name": "freight-rates",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Freight rate calculator built for a JavaScript technical assessment.",
+  "homepage": "https://digital-sparks-freight-rates.webflow.io/",
   "license": "ISC",
-  "keywords": [],
+  "keywords": [
+    "javascript",
+    "webflow",
+    "freight",
+    "calculator"
+  ],
   "author": {
-    "name": "Digital Sparks",
-    "url": "https://digital-sparks.com/"
+    "name": "Breno Daroz",
+    "url": "https://github.com/brenomzy"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digital-sparks/developer-starter.git"
+    "url": "git+https://github.com/brenomzy/freight-rates.git"
   },
   "bugs": {
-    "url": "https://github.com/digital-sparks/developer-starter/issues"
+    "url": "https://github.com/brenomzy/freight-rates/issues"
   },
   "type": "module",
-  "main": "src/index.js",
-  "module": "src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "files": [
     "dist"
   ],
@@ -52,9 +58,7 @@
     "@finsweet/ts-utils": "^0.40.0"
   },
   "engines": {
-    "pnpm": ">=10"
-  },
-  "publishConfig": {
-    "provenance": true
+    "node": ">=20",
+    "pnpm": ">=10.26"
   }
 }
