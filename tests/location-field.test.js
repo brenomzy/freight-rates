@@ -130,4 +130,27 @@ describe('location field', () => {
 
     controller.destroy();
   });
+
+  it('shows an accessible empty state when no city matches', async () => {
+    vi.useFakeTimers();
+
+    const store = createRateModuleStore();
+    const field = createField();
+    const placesService = {
+      createSessionToken: vi.fn().mockResolvedValue({ id: 'session' }),
+      getSuggestions: vi.fn().mockResolvedValue([]),
+    };
+    const controller = createLocationField('origin', field, store, placesService, 'one');
+
+    field.input.value = 'Unknown place';
+    field.input.dispatchEvent(new window.Event('input'));
+    await vi.advanceTimersByTimeAsync(300);
+
+    expect(field.list.hidden).toBe(false);
+    expect(field.list.querySelector('[role="status"]').textContent).toBe(
+      'No matching cities found.'
+    );
+
+    controller.destroy();
+  });
 });

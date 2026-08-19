@@ -135,6 +135,11 @@ describe('rate module initialization', () => {
     expect(cargoInputs[0].value).toBe("40' standard dry container");
     expect(cargoInputs[1].getAttribute('aria-expanded')).toBe('false');
 
+    cargoInputs[1].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    cargoInputs[1].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(cargoInputs[1].getAttribute('aria-expanded')).toBe('false');
+
     airInputs[0].checked = true;
     airInputs[0].dispatchEvent(new window.Event('change'));
 

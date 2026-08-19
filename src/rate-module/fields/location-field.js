@@ -16,6 +16,16 @@ function createGoogleAttribution() {
   return attribution;
 }
 
+function createListStatus() {
+  const status = document.createElement('div');
+
+  status.className = 'rate_dropdown-status';
+  status.setAttribute('aria-live', 'polite');
+  status.setAttribute('role', 'status');
+
+  return status;
+}
+
 export function createLocationField(name, field, store, placesService, moduleId) {
   const { input, list, optionTemplate } = field;
 
@@ -26,6 +36,7 @@ export function createLocationField(name, field, store, placesService, moduleId)
   let debounceTimer;
   let requestId = 0;
   let sessionTokenPromise;
+  const status = createListStatus();
 
   const listbox = createAccessibleListbox({
     input,
@@ -44,6 +55,7 @@ export function createLocationField(name, field, store, placesService, moduleId)
         },
       });
     },
+    status,
   });
 
   input.autocomplete = 'off';
@@ -65,6 +77,8 @@ export function createLocationField(name, field, store, placesService, moduleId)
 
   async function search(query, currentRequestId) {
     input.setAttribute('aria-busy', 'true');
+    listbox.setStatus('Searching locations…');
+    listbox.open();
 
     try {
       const sessionToken = await getSessionToken();
@@ -72,19 +86,22 @@ export function createLocationField(name, field, store, placesService, moduleId)
 
       if (currentRequestId !== requestId) return;
 
-      listbox.setOptions(suggestions);
-
       if (suggestions.length) {
+        listbox.setStatus('');
+        listbox.setOptions(suggestions);
         listbox.open();
       } else {
-        listbox.close();
+        listbox.setOptions([]);
+        listbox.setStatus('No matching cities found.');
+        listbox.open();
       }
     } catch (error) {
       if (currentRequestId !== requestId) return;
 
       sessionTokenPromise = undefined;
       listbox.setOptions([]);
-      listbox.close();
+      listbox.setStatus('Location suggestions are temporarily unavailable.');
+      listbox.open();
       console.error(`[rate-module] ${name} suggestions are unavailable.`, error);
     } finally {
       if (currentRequestId === requestId) input.removeAttribute('aria-busy');
@@ -96,6 +113,7 @@ export function createLocationField(name, field, store, placesService, moduleId)
     const query = inputValue.trim();
 
     cancelPendingSearch();
+    listbox.setStatus('');
     listbox.setOptions([]);
     listbox.close();
     store.patchState({

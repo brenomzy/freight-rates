@@ -32,6 +32,7 @@ export function createAccessibleListbox({
   onSelect,
   openOnSpace = false,
   footer = null,
+  status = null,
 }) {
   const listboxId = `${idPrefix}-listbox`;
   const field = input.closest('.cargo_field') ?? list.parentElement;
@@ -47,6 +48,17 @@ export function createAccessibleListbox({
   list.id = listboxId;
   list.setAttribute('role', 'listbox');
   list.hidden = true;
+  if (status) status.hidden = true;
+
+  function renderContents() {
+    const content = optionElements.length
+      ? [...optionElements, ...(footer ? [footer] : [])]
+      : status && !status.hidden
+        ? [status]
+        : [];
+
+    list.replaceChildren(...content);
+  }
 
   function setActiveIndex(index) {
     if (!optionElements.length) return;
@@ -62,7 +74,7 @@ export function createAccessibleListbox({
   }
 
   function open() {
-    if (!items.length) return;
+    if (!items.length && (!status || status.hidden)) return;
 
     isOpen = true;
     list.hidden = false;
@@ -94,7 +106,7 @@ export function createAccessibleListbox({
     optionElements = items.map((item, index) =>
       createOptionElement(optionTemplate, item, index, listboxId)
     );
-    list.replaceChildren(...optionElements, ...(items.length && footer ? [footer] : []));
+    renderContents();
     activeIndex = -1;
 
     if (!items.length) close();
@@ -104,6 +116,14 @@ export function createAccessibleListbox({
     optionElements.forEach((option) => {
       option.setAttribute('aria-selected', String(option.dataset.rateOptionValue === value));
     });
+  }
+
+  function setStatus(message) {
+    if (!status) return;
+
+    status.textContent = message;
+    status.hidden = !message;
+    renderContents();
   }
 
   function handleInputClick() {
@@ -193,6 +213,7 @@ export function createAccessibleListbox({
     open,
     setOptions,
     setSelectedValue,
+    setStatus,
     destroy() {
       input.removeEventListener('click', handleInputClick);
       input.removeEventListener('keydown', handleInputKeydown);
