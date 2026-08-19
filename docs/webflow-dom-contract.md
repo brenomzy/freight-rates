@@ -45,4 +45,5 @@ The transport group also needs one error element using the existing `.cargo_fiel
 - Calculate base path: `/calculator`
 - Sea is checked in the published Webflow markup and is also enforced by the initial JavaScript state.
 - The hidden cargo select contains all five required labels and values.
-- The current published module has no transport validation message, so that is the only small Webflow element that still needs to be added.
+- All documented field, dropdown, option-template, transport, submit, and error hooks are published.
+- Flatpickr's official structural stylesheet is loaded in the page head. Project-authored calendar styles remain in the Webflow CSS Embed.

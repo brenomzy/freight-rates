@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  dateValueToLocalDate,
   formatDateForDisplay,
   getLocalDateValue,
   isDateBefore,
@@ -16,6 +17,10 @@ describe('date utilities', () => {
 
   it('formats a valid date for the input', () => {
     expect(formatDateForDisplay('2026-11-15')).toBe('15-11-2026');
+
+    const localDate = dateValueToLocalDate('2026-11-15');
+
+    expect(localDate).toEqual(new Date(2026, 10, 15));
   });
 
   it('rejects invalid calendar dates', () => {

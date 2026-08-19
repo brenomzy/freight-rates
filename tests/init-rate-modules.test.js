@@ -142,4 +142,22 @@ describe('rate module initialization', () => {
 
     initialization.destroy();
   });
+
+  it('keeps the ready date read-only and synchronizes the display value', () => {
+    const scope = document.createElement('main');
+    scope.innerHTML = `${getModuleMarkup()}${getModuleMarkup()}`;
+
+    const initialization = initRateModules(scope);
+    const dateInputs = scope.querySelectorAll('[name="cargo_date"]');
+
+    expect(dateInputs[0].readOnly).toBe(true);
+    expect(dateInputs[0].getAttribute('aria-haspopup')).toBe('dialog');
+
+    initialization.store.patchState({ readyDate: '2026-11-15' });
+
+    expect(dateInputs[0].value).toBe('15-11-2026');
+    expect(dateInputs[1].value).toBe('15-11-2026');
+
+    initialization.destroy();
+  });
 });

@@ -1,4 +1,5 @@
 import { createCargoField } from './fields/cargo-field.js';
+import { createReadyDateField } from './fields/ready-date-field.js';
 import { createTransportControls } from './fields/transport-controls.js';
 import { getRateModuleElements } from './selectors.js';
 
@@ -14,10 +15,12 @@ export function createRateModuleController(root, store) {
   moduleCount += 1;
   const moduleId = moduleCount;
   const cargoField = createCargoField(elements.fields.cargo, store, moduleId);
+  const readyDateField = createReadyDateField(elements.fields.readyDate, store, moduleId);
   const transportControls = createTransportControls(elements.transport, store);
 
   function render(state) {
     cargoField.render(state.cargo);
+    readyDateField.render(state.readyDate);
     transportControls.render(state.transportModes);
   }
 
@@ -28,6 +31,7 @@ export function createRateModuleController(root, store) {
     elements,
     destroy() {
       cargoField.destroy();
+      readyDateField.destroy();
       transportControls.destroy();
       unsubscribe();
       controllers.delete(root);

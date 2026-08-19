@@ -59,7 +59,8 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@finsweet/ts-utils": "^0.40.0"
+    "@finsweet/ts-utils": "^0.40.0",
+    "flatpickr": "4.6.13"
   },
   "engines": {
     "node": ">=20",

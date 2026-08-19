@@ -28,6 +28,12 @@ export function getLocalDateValue(date = new Date()) {
   );
 }
 
+export function dateValueToLocalDate(value) {
+  const date = parseDateValue(value);
+
+  return date ? new Date(date.year, date.month - 1, date.day) : null;
+}
+
 export function isValidDateValue(value) {
   return parseDateValue(value) !== null;
 }
