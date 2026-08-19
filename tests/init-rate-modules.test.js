@@ -182,6 +182,7 @@ describe('rate module initialization', () => {
     const initialization = initRateModules(scope, { navigate });
     const submit = scope.querySelector('[data-rate-submit]');
     const originInput = scope.querySelector('[data-rate-input="origin"]');
+    const originFocus = vi.spyOn(originInput, 'focus');
 
     submit.click();
 
@@ -192,6 +193,7 @@ describe('rate module initialization', () => {
     expect(scope.querySelector('[data-rate-error="ready-date"]').hidden).toBe(false);
     expect(scope.querySelector('[data-rate-error="transport"]').hidden).toBe(true);
     expect(originInput.getAttribute('aria-invalid')).toBe('true');
+    expect(originFocus).toHaveBeenCalledOnce();
 
     originInput.value = 'R';
     originInput.dispatchEvent(new window.Event('input'));

@@ -72,6 +72,13 @@ export function createFormController(elements, store, moduleId, navigate = navig
     readyDate: createFieldErrorController(elements.fields.readyDate, 'ready-date', moduleId),
     transport: createTransportErrorController(elements.transport, moduleId),
   };
+  const validationOrder = [
+    ['origin', elements.fields.origin.input],
+    ['destination', elements.fields.destination.input],
+    ['cargo', elements.fields.cargo.input],
+    ['readyDate', elements.fields.readyDate.input],
+    ['transport', elements.transport.sea],
+  ];
   let previousState = store.getState();
 
   function setErrors(errors) {
@@ -92,7 +99,12 @@ export function createFormController(elements, store, moduleId, navigate = navig
 
     setErrors(errors);
 
-    if (hasValidationErrors(errors)) return;
+    if (hasValidationErrors(errors)) {
+      const firstInvalidControl = validationOrder.find(([name]) => errors[name])?.[1];
+
+      firstInvalidControl?.focus();
+      return;
+    }
 
     const baseHref = elements.submit.getAttribute('href');
 
