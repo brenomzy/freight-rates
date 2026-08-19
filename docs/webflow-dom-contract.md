@@ -31,6 +31,22 @@ Add these attributes to the existing styled elements inside each field:
 
 The transport group also needs one error element using the existing `.cargo_field-error` style and the text `Select at least one transport option`. Add `data-rate-error="transport"` to that element.
 
+Add the native `hidden` attribute to every error element in Webflow. JavaScript removes it only after a validation failure. The page-level CSS Embed includes an explicit `[hidden]` rule because the existing `.cargo_field-error` display style otherwise overrides the browser default.
+
+## Runtime configuration
+
+Add this configuration before the project script in the Webflow page head:
+
+```html
+<script>
+  window.FREIGHT_RATES_CONFIG = {
+    googleMapsApiKey: 'YOUR_BROWSER_KEY',
+  };
+</script>
+```
+
+The key stays out of the repository and generated bundle. A browser key is still visible to site visitors, so it must be restricted in Google Cloud to the approved Webflow staging referrer and only the required Maps APIs.
+
 ## Rules for duplicated modules
 
 - Every query starts from one module root.

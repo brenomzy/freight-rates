@@ -1,4 +1,4 @@
-import { GOOGLE_MAPS_API_KEY } from '../config.js';
+import { getGoogleMapsApiKey } from '../config.js';
 
 const CALLBACK_NAME = '__freightRatesGoogleMapsReady';
 const SCRIPT_SELECTOR = 'script[data-rate-google-maps]';
@@ -17,6 +17,8 @@ export function loadGooglePlacesLibrary() {
   }
 
   if (placesLibraryPromise) return placesLibraryPromise;
+
+  const apiKey = getGoogleMapsApiKey();
 
   placesLibraryPromise = new Promise((resolve, reject) => {
     function rejectLoad() {
@@ -47,7 +49,7 @@ export function loadGooglePlacesLibrary() {
 
     const params = new URLSearchParams({
       callback: CALLBACK_NAME,
-      key: GOOGLE_MAPS_API_KEY,
+      key: apiKey,
       language: 'en',
       loading: 'async',
       v: 'weekly',

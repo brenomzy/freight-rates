@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild';
-import { readdirSync } from 'fs';
+import { readdirSync, rmSync } from 'fs';
 import { createServer, request } from 'http';
 import { join, sep } from 'path';
 
@@ -32,6 +32,7 @@ const context = await esbuild.context({
 
 // Build files in prod
 if (PRODUCTION) {
+  rmSync(join(BUILD_DIRECTORY, 'index.js.map'), { force: true });
   await context.rebuild();
   context.dispose();
 }
