@@ -2,12 +2,13 @@ import { createCargoField } from './fields/cargo-field.js';
 import { createLocationField } from './fields/location-field.js';
 import { createReadyDateField } from './fields/ready-date-field.js';
 import { createTransportControls } from './fields/transport-controls.js';
+import { createFormController } from './form-controller.js';
 import { getRateModuleElements } from './selectors.js';
 
 const controllers = new WeakMap();
 let moduleCount = 0;
 
-export function createRateModuleController(root, store, placesService) {
+export function createRateModuleController(root, store, { navigate, placesService }) {
   const existingController = controllers.get(root);
 
   if (existingController) return existingController;
@@ -32,6 +33,7 @@ export function createRateModuleController(root, store, placesService) {
   );
   const readyDateField = createReadyDateField(elements.fields.readyDate, store, moduleId);
   const transportControls = createTransportControls(elements.transport, store);
+  const formController = createFormController(elements, store, moduleId, navigate);
 
   function render(state) {
     cargoField.render(state.cargo);
@@ -39,6 +41,7 @@ export function createRateModuleController(root, store, placesService) {
     destinationField.render(state.destination);
     readyDateField.render(state.readyDate);
     transportControls.render(state.transportModes);
+    formController.render(state);
   }
 
   const unsubscribe = store.subscribe(render);
@@ -52,6 +55,7 @@ export function createRateModuleController(root, store, placesService) {
       destinationField.destroy();
       readyDateField.destroy();
       transportControls.destroy();
+      formController.destroy();
       unsubscribe();
       controllers.delete(root);
     },

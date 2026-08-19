@@ -79,6 +79,7 @@ export function getRateModuleElements(root) {
       air: queryRequired(root, SELECTORS.airInput, 'air checkbox'),
       rail: queryRequired(root, SELECTORS.railInput, 'train checkbox'),
       error: root.querySelector('[data-rate-error="transport"]'),
+      group: root.querySelector('.rate_checkbox-wrapper'),
     },
     submit: queryRequired(root, SELECTORS.submit, 'calculate link'),
   };

@@ -13,7 +13,10 @@ export function initRateModules(scope = document, options = {}) {
   const store = createRateModuleStore();
   const placesService = options.placesService ?? createPlacesService();
   const controllers = getRateModuleRoots(scope).map((root) =>
-    createRateModuleController(root, store, placesService)
+    createRateModuleController(root, store, {
+      navigate: options.navigate,
+      placesService,
+    })
   );
   const initialization = {
     controllers,

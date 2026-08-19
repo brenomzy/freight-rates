@@ -1,20 +1,24 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { initRateModules } from '../src/rate-module/init-rate-modules.js';
 
 function getModuleMarkup() {
   return `
-    <div class="rate-module_component">
-      <form>
+    <div data-rate-module class="rate-module_component">
+      <form data-rate-form>
         <div class="cargo_field">
-          <input name="cargo_origin" />
-          <div class="form_dropdown-list"><div class="form_dropdown-link"></div></div>
-          <div class="cargo_field-error"></div>
+          <input data-rate-input="origin" name="cargo_origin" />
+          <div data-rate-list="origin" class="form_dropdown-list">
+            <div data-rate-option-template="origin" class="form_dropdown-link"></div>
+          </div>
+          <div data-rate-error="origin" class="cargo_field-error"></div>
         </div>
         <div class="cargo_field">
-          <input name="cargo_destination" />
-          <div class="form_dropdown-list"><div class="form_dropdown-link"></div></div>
-          <div class="cargo_field-error"></div>
+          <input data-rate-input="destination" name="cargo_destination" />
+          <div data-rate-list="destination" class="form_dropdown-list">
+            <div data-rate-option-template="destination" class="form_dropdown-link"></div>
+          </div>
+          <div data-rate-error="destination" class="cargo_field-error"></div>
         </div>
         <div class="cargo_field">
           <input data-rate-input="cargo" name="cargo_type" />
@@ -31,16 +35,19 @@ function getModuleMarkup() {
               <div class="form_input-text-xs"></div>
             </div>
           </div>
-          <div class="cargo_field-error"></div>
+          <div data-rate-error="cargo" class="cargo_field-error"></div>
         </div>
         <div class="cargo_field">
-          <input name="cargo_date" />
-          <div class="cargo_field-error"></div>
+          <input data-rate-input="ready-date" name="cargo_date" />
+          <div data-rate-error="ready-date" class="cargo_field-error"></div>
         </div>
-        <input name="cargo_option_sea" type="checkbox" />
-        <input name="cargo_option_air" type="checkbox" checked />
-        <input name="cargo_option_train" type="checkbox" checked />
-        <a data-button-click href="/calculator">Calculate</a>
+        <div class="rate_checkbox-wrapper">
+          <input data-rate-mode="sea" name="cargo_option_sea" type="checkbox" />
+          <input data-rate-mode="air" name="cargo_option_air" type="checkbox" checked />
+          <input data-rate-mode="rail" name="cargo_option_train" type="checkbox" checked />
+        </div>
+        <div data-rate-error="transport" class="cargo_field-error"></div>
+        <a data-rate-submit data-button-click href="/calculator">Calculate</a>
       </form>
     </div>
   `;
@@ -157,6 +164,67 @@ describe('rate module initialization', () => {
 
     expect(dateInputs[0].value).toBe('15-11-2026');
     expect(dateInputs[1].value).toBe('15-11-2026');
+
+    initialization.destroy();
+  });
+
+  it('shows validation errors, clears corrected fields, and builds the redirect', () => {
+    const scope = document.createElement('main');
+    const navigate = vi.fn();
+
+    scope.innerHTML = getModuleMarkup();
+
+    const initialization = initRateModules(scope, { navigate });
+    const submit = scope.querySelector('[data-rate-submit]');
+    const originInput = scope.querySelector('[data-rate-input="origin"]');
+
+    submit.click();
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(scope.querySelector('[data-rate-error="origin"]').hidden).toBe(false);
+    expect(scope.querySelector('[data-rate-error="destination"]').hidden).toBe(false);
+    expect(scope.querySelector('[data-rate-error="cargo"]').hidden).toBe(false);
+    expect(scope.querySelector('[data-rate-error="ready-date"]').hidden).toBe(false);
+    expect(scope.querySelector('[data-rate-error="transport"]').hidden).toBe(true);
+    expect(originInput.getAttribute('aria-invalid')).toBe('true');
+
+    originInput.value = 'R';
+    originInput.dispatchEvent(new window.Event('input'));
+
+    expect(scope.querySelector('[data-rate-error="origin"]').hidden).toBe(true);
+
+    initialization.store.patchState({
+      origin: {
+        inputValue: 'Rotterdam, Netherlands',
+        label: 'Rotterdam, Netherlands',
+        placeId: 'origin-place',
+      },
+      destination: {
+        inputValue: 'Shanghai, China',
+        label: 'Shanghai, China',
+        placeId: 'destination-place',
+      },
+      cargo: { label: "40' high cube container", value: 'HC_40' },
+      readyDate: '2099-11-15',
+      transportModes: ['sea', 'air'],
+    });
+
+    expect(scope.querySelectorAll('[data-rate-error]:not([hidden])')).toHaveLength(0);
+
+    submit.click();
+
+    expect(navigate).toHaveBeenCalledOnce();
+
+    const redirect = new URL(navigate.mock.calls[0][0]);
+
+    expect(redirect.pathname).toBe('/calculator');
+    expect(Object.fromEntries(redirect.searchParams)).toEqual({
+      containerType: 'HC_40',
+      destination: 'Shanghai, China',
+      origin: 'Rotterdam, Netherlands',
+      transportDate: '2099-11-15',
+      transportMode: 'sea,air',
+    });
 
     initialization.destroy();
   });
