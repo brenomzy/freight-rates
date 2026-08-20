@@ -11,7 +11,7 @@ function createOptionElement(template, item, index, listboxId) {
   option.tabIndex = -1;
 
   if (primaryText) {
-    primaryText.textContent = item.label;
+    primaryText.textContent = item.optionLabel ?? item.label;
   } else {
     option.textContent = item.label;
   }

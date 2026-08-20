@@ -51,6 +51,8 @@ describe('Places service', () => {
     expect(normalizePlaceSuggestions([rotterdam, rotterdamAddress])).toEqual([
       {
         label: 'Rotterdam, Netherlands',
+        optionLabel: 'Rotterdam',
+        description: 'Netherlands',
         placeId: 'rotterdam-id',
         value: 'rotterdam-id',
       },
@@ -61,6 +63,8 @@ describe('Places service', () => {
     expect(normalizePlaceSuggestions([maringaWithAccent, maringaWithoutAccent])).toEqual([
       {
         label: 'Maringá, Brazil',
+        optionLabel: 'Maringá',
+        description: 'Brazil',
         placeId: 'maringa-accent-id',
         value: 'maringa-accent-id',
       },

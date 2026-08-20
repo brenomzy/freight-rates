@@ -4,18 +4,6 @@ import { createAccessibleListbox } from '../ui/accessible-listbox.js';
 const MINIMUM_QUERY_LENGTH = 2;
 const SEARCH_DELAY = 300;
 
-function createGoogleAttribution() {
-  const attribution = document.createElement('div');
-  const logo = document.createElement('img');
-
-  attribution.className = 'rate_google-attribution';
-  logo.src = 'https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3.png';
-  logo.alt = 'Powered by Google';
-  attribution.append(logo);
-
-  return attribution;
-}
-
 function createListStatus() {
   const status = document.createElement('div');
 
@@ -42,7 +30,6 @@ export function createLocationField(name, field, store, placesService, moduleId)
     input,
     list,
     optionTemplate,
-    footer: createGoogleAttribution(),
     idPrefix: `rate-module-${moduleId}-${name}`,
     onSelect(option) {
       cancelPendingSearch();

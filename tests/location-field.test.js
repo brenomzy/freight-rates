@@ -24,8 +24,8 @@ function createField() {
   };
 }
 
-function createSuggestion(label, placeId) {
-  return { label, placeId, value: placeId };
+function createSuggestion(label, placeId, optionLabel, description) {
+  return { description, label, optionLabel, placeId, value: placeId };
 }
 
 afterEach(() => {
@@ -43,7 +43,9 @@ describe('location field', () => {
       createSessionToken: vi.fn().mockResolvedValue({ id: 'session' }),
       getSuggestions: vi
         .fn()
-        .mockResolvedValue([createSuggestion('Rotterdam, Netherlands', 'rotterdam-id')]),
+        .mockResolvedValue([
+          createSuggestion('Rotterdam, Netherlands', 'rotterdam-id', 'Rotterdam', 'Netherlands'),
+        ]),
     };
     const firstController = createLocationField('origin', firstField, store, placesService, 'one');
     const secondController = createLocationField(
@@ -69,6 +71,9 @@ describe('location field', () => {
 
     expect(placesService.getSuggestions).toHaveBeenCalledWith('Ro', { id: 'session' });
     expect(firstField.list.querySelectorAll('[role="option"]')).toHaveLength(1);
+    expect(firstField.list.querySelector('.form_input-text').textContent).toBe('Rotterdam');
+    expect(firstField.list.querySelector('.form_input-text-xs').textContent).toBe('Netherlands');
+    expect(firstField.list.querySelector('.rate_google-attribution')).toBeNull();
 
     firstField.list.querySelector('[role="option"]').click();
 

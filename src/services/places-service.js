@@ -51,6 +51,8 @@ export function normalizePlaceSuggestion(suggestion) {
 
   return {
     label: `${city}, ${country}`,
+    optionLabel: city,
+    description: country,
     placeId: prediction.placeId,
     value: prediction.placeId,
   };
